@@ -133,3 +133,59 @@ INSERT INTO fines VALUES
 (13, 22, 5.00, 'YES'),
 (14, 26, 0.00, 'YES'),
 (15, 30, 25.00, 'NO');
+
+
+-- SQL Queries --
+
+1. Books Currently Issued -- 
+SELECT m.name, b.title, i.issue_date
+FROM issued_books i 
+JOIN members m ON i.member_id = m.member_id
+JOIN books b ON i.book_id = b.book_id
+WHERE i.return_date IS NULL;
+
+2. Overdue Books --
+SELECT m.name, b.title, i.due_date
+FROM issued_books i
+JOIN members m ON i.member_id = m.member_id
+JOIN books b ON i.book_id = b.book_id
+WHERE i.return_date IS NULL
+AND i.due_date < CURRENT_DATE;
+
+3. Calculate Fine (₹10 per day) --
+SELECT 
+i.issue_id,
+DATEDIFF(CURRENT_DATE, i.due_date) * 10 AS fine_amount
+FROM issued_books i
+WHERE i.return_date IS NULL
+AND i.due_date < CURRENT_DATE;
+
+4. Most Borrowed Books --
+SELECT b.title, COUNT(*) AS times_borrowed
+FROM issued_books i
+JOIN books b ON i.book_id = b.book_id
+GROUP BY b.title
+ORDER BY times_borrowed DESC;
+
+5. Top Active Members --
+SELECT m.name, COUNT(*) AS books_taken
+FROM issued_books i
+JOIN members m ON i.member_id = m.member_id
+GROUP BY m.name
+ORDER BY books_taken DESC;
+
+6. Available Books Count --
+SELECT title, available_copies
+FROM books
+WHERE available_copies > 0;
+
+7. Return Book Process --
+UPDATE issued_books
+SET return_date = CURRENT_DATE
+WHERE issue_id = 2;
+UPDATE books
+SET available_copies = available_copies + 1
+WHERE book_id = 102;
+
+
+--Advance SQL Queries --
