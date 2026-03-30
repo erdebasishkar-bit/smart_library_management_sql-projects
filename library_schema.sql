@@ -189,3 +189,22 @@ WHERE book_id = 102;
 
 
 --Advance SQL Queries --
+
+
+1. Monthly Issue Report --
+SELECT EXTRACT(MONTH FROM issue_date) AS month,
+COUNT(*) AS total_issues
+FROM issued_books
+GROUP BY month;
+
+2. Category-wise Books Counts --
+SELECT category, COUNT(*) AS total_books
+FROM books
+GROUP BY category;
+
+3. Members Who Never Borrowed Books --
+SELECT name
+FROM members
+WHERE member_id NOT IN (
+SELECT member_id FROM issued_books
+);
